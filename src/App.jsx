@@ -3,16 +3,6 @@ import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import { ToastContainer } from 'react-toastify';
 
-function AppContent() {
-  return (
-    <>
-      <CssBaseline />
-      <ToastContainer position="top-right" autoClose={3000} />
-      <AppRoutes />
-    </>
-  );
-}
-
 function App() {
   return (
     <BrowserRouter>
