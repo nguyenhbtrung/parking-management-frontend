@@ -21,9 +21,7 @@ import {
     Logout,
     DirectionsCar,
 } from "@mui/icons-material";
-
-const drawerWidth = 260;
-const collapsedWidth = 64;
+import { collapsedWidth, drawerWidth } from "../../appConst";
 
 const menuItems = [
     { text: "Sơ đồ bãi xe", icon: <GridView />, path: "/admin/parking" },
@@ -37,7 +35,7 @@ export default function AdminLayout() {
     const location = useLocation();
 
     return (
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", height: "100vh", maxWidth: "100%" }}>
             {/* Sidebar */}
             <Drawer
                 variant="permanent"
@@ -154,7 +152,7 @@ export default function AdminLayout() {
             </Drawer>
 
             {/* Nội dung */}
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 3, display: "flex", flexDirection: "column", width: "100%" }}>
                 <Outlet />
             </Box>
         </Box>

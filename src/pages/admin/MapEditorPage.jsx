@@ -62,13 +62,14 @@ export default function MapEditorPage() {
             </Button>
 
             <Paper
+                // elevation={0}
                 sx={{
                     mt: 2,
                     width: "800px",
                     height: "600px",
                     position: "relative",
-                    backgroundColor: "#f4f4f4",
-                    border: "2px dashed #ccc"
+                    // backgroundColor: "#f4f4f4",
+                    // border: "2px dashed #ccc"
                 }}
             >
                 {slots.map((slot) => (

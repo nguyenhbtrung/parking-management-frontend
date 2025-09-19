@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import AdminLayout from "../pages/admin/AdminLayout";
-import ParkingManagementPage from "../pages/admin/ParkingManagementPage";
+import ParkingManagementPage from "../pages/admin/ParkingMapPage";
 import MapEditorPage from "../pages/admin/MapEditorPage";
 
 function AppRoutes() {
