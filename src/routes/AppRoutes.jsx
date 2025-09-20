@@ -9,7 +9,6 @@ import BookingParkingMap from "../pages/user/BookingParkingMap";
 function AppRoutes() {
     return (
         <Routes>
-            <Route path="/" element={<div>Home</div>} />
             <Route path="/about" element={<div>About</div>} />
 
             {/* Admin */}
@@ -17,11 +16,11 @@ function AppRoutes() {
                 <Route path="parking" element={<ParkingManagementPage />} />
                 <Route path="editor" element={<MapEditorPage />} />
             </Route>
-            <Route path="/user" element={<UserLayout/>} >
+            <Route path="/" element={<UserLayout />} >
                 <Route path="history" element={<BookingHistory />} />
-                <Route path="booking" element={<BookingParkingMap/>} />
+                <Route path="booking" element={<BookingParkingMap />} />
             </Route>
-            
+
 
             <Route path="*" element={<div>404</div>} />
         </Routes>
