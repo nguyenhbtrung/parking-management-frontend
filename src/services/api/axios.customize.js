@@ -22,11 +22,11 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
     response => response,
     error => {
-        const { status } = error.response || {};
-        if (status === 401) {
-            localStorage.removeItem(ACCESS_TOKEN_KEY_NAME);
-            window.location.href = '/signin';
-        }
+        // const { status } = error.response || {};
+        // if (status === 401) {
+        //     localStorage.removeItem(ACCESS_TOKEN_KEY_NAME);
+        //     window.location.href = '/signin';
+        // }
         return Promise.reject(error);
     }
 );

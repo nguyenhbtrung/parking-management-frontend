@@ -5,6 +5,7 @@ import ParkingMap from "../../components/ParkingMap";
 import { slotPositions } from "../../data/slotPositions";
 import ParkingSlotDialog from "../../components/dialogs/ParkingSlotDialog";
 import CheckInDialog from "../../components/dialogs/CheckInDialog";
+import { getParkingSlots } from "../../services/admin/parkingSlot.service";
 
 // --- Mảng trạng thái 48 slot (giả lập API) ---
 const slotStatesFromAPI = [
@@ -71,22 +72,40 @@ const ParkingMapPage = () => {
     const scale = (availableWidth / mapWidth) * 0.8;
 
     useEffect(() => {
+        const fetchSlotStates = async () => {
+            const res = await getParkingSlots();
+            if (res?.status === 200 && res?.data?.data) {
+                const stateMap = {};
+                const slotStates = res.data.data
+                slotStates.forEach(s => {
+                    stateMap[s.id] = s;
+                });
+                const mergedSlots = slotPositions.map(pos => ({
+                    ...pos,
+                    ...(stateMap[pos.id] || {})
+                }));
+
+                setSlots(mergedSlots);
+            }
+        };
+
+        fetchSlotStates();
         // Giả lập API call với delay
-        setTimeout(() => {
-            // Tạo object map từ slotStatesFromAPI để truy cập nhanh theo id
-            const stateMap = {};
-            slotStatesFromAPI.forEach(s => {
-                stateMap[s.id] = s;
-            });
+        // setTimeout(() => {
+        //     // Tạo object map từ slotStatesFromAPI để truy cập nhanh theo id
+        //     const stateMap = {};
+        //     slotStatesFromAPI.forEach(s => {
+        //         stateMap[s.id] = s;
+        //     });
 
-            // Gộp slotPositions + slotStates dựa theo id bằng object map
-            const mergedSlots = slotPositions.map(pos => ({
-                ...pos,
-                ...(stateMap[pos.id] || {}) // lấy trạng thái từ map nếu có
-            }));
+        //     // Gộp slotPositions + slotStates dựa theo id bằng object map
+        //     const mergedSlots = slotPositions.map(pos => ({
+        //         ...pos,
+        //         ...(stateMap[pos.id] || {}) // lấy trạng thái từ map nếu có
+        //     }));
 
-            setSlots(mergedSlots);
-        }, 1000); // giả lập delay 1 giây
+        //     setSlots(mergedSlots);
+        // }, 1000); // giả lập delay 1 giây
     }, []);
 
     const onSlotClick = (id) => {
