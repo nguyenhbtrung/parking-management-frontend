@@ -28,6 +28,10 @@ export default function UserLayout() {
 		navigate("/user/booking");
 	}
 
+	const navigateHistory = () => {
+		navigate("/user/history");
+	}
+
 	return <Box>
 	<AppBar position="fixed" color="white" sx={{ p: 1, bgcolor: "#2C2C2C", color: "white"  }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -53,7 +57,10 @@ export default function UserLayout() {
 				)}
 			</Box>
           <Box sx={{ display:"flex"}}>
-            <Button onClick={navigateBooking} variant="outlined" sx={{ mr: 2, color:"lightGreen", borderColor:"lightGreen" }}>
+			<Button onClick={navigateHistory} variant="text" sx={{ mr: 2, color:"white" }}>
+              Lịch sử
+            </Button>
+            <Button onClick={navigateBooking} variant="text" sx={{ mr: 2, color:"lightGreen"}}>
               Đặt chỗ
             </Button>
             <Box onClick={handleMenu} sx={{ p: 1, display:"flex"}}>

@@ -4,6 +4,7 @@ import ParkingManagementPage from "../pages/admin/ParkingMapPage";
 import MapEditorPage from "../pages/admin/MapEditorPage";
 import BookingHistory from "../pages/user/BookingHistory";
 import UserLayout from "../pages/user/UserLayout";
+import BookingParkingMap from "../pages/user/BookingParkingMap";
 
 function AppRoutes() {
     return (
@@ -18,7 +19,7 @@ function AppRoutes() {
             </Route>
             <Route path="/user" element={<UserLayout/>} >
                 <Route path="history" element={<BookingHistory />} />
-                <Route path="booking" element={<div>Booking Page</div>} />
+                <Route path="booking" element={<BookingParkingMap/>} />
             </Route>
             
 
