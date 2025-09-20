@@ -3,17 +3,23 @@ import { Box, Paper, Typography } from "@mui/material";
 // Dữ liệu mũi tên
 const arrows = [
     { id: 1, x: 150, y: 45, direction: "left" },
-    { id: 2, x: 150, y: 530, direction: "left" },
+    { id: 2, x: 150, y: 530, direction: "right" },
     { id: 3, x: 390, y: 45, direction: "left" },
-    { id: 4, x: 390, y: 530, direction: "left" },
+    { id: 4, x: 390, y: 530, direction: "right" },
     { id: 5, x: 630, y: 45, direction: "left" },
-    { id: 6, x: 630, y: 530, direction: "left" },
+    { id: 6, x: 630, y: 530, direction: "right" },
 
     { id: 7, x: 20, y: 170, direction: "down" },
     { id: 8, x: 20, y: 420, direction: "down" },
 
-    { id: 9, x: 760, y: 170, direction: "up" },
-    { id: 10, x: 760, y: 420, direction: "up" },
+    { id: 9, x: 760, y: 170, direction: "down" },
+    { id: 10, x: 760, y: 420, direction: "down" },
+
+    { id: 11, x: 270, y: 170, direction: "down" },
+    { id: 12, x: 270, y: 420, direction: "down" },
+
+    { id: 13, x: 510, y: 170, direction: "down" },
+    { id: 14, x: 510, y: 420, direction: "down" },
 ];
 
 const doubleArrows = [
@@ -26,29 +32,28 @@ const doubleArrows = [
 
 
 // Component vẽ ô
-const Slot = ({ id, status, x, y, plate, openSide, scale = 1, isAdmin = true }) => {
+const Slot = ({ id, status, x, y, licensePlate, openSide, scale = 1, isAdmin = true, onSlotClick }) => {
     let bg = "white";
     let color = "black";
     let borderColor = "#aaa";
 
     if (!isAdmin) {
-        if (status !== "empty") {
+        if (status !== "available") {
             bg = "#FFB3B3";
-            borderColor = "#D00000";
+            // borderColor = "#D00000";
             color = "darkred";
         }
     } else {
-        if (status === "selected") {
+        if (status === "booked") {
             bg = "#FFEB99";
-            borderColor = "#E0B000";
+            // borderColor = "#E0B000";
         }
         if (status === "occupied") {
             bg = "#FFB3B3";
-            borderColor = "#D00000";
+            // borderColor = "#D00000";
             color = "darkred";
         }
     }
-
 
     const borders = {
         borderTop: `2px solid ${borderColor}`,
@@ -63,11 +68,12 @@ const Slot = ({ id, status, x, y, plate, openSide, scale = 1, isAdmin = true }) 
 
     return (
         <Box
+            onClick={() => onSlotClick && onSlotClick(id)} // 👈 Thêm hàm xử lý sự kiện click
             sx={{
                 position: "absolute",
                 left: x * scale,
                 top: 16 + y * scale,
-                width: 80 * scale,   // ⬅️ chỉnh lại từ 60 thành 80
+                width: 80 * scale,
                 height: 40 * scale,
                 bgcolor: bg,
                 ...borders,
@@ -79,10 +85,20 @@ const Slot = ({ id, status, x, y, plate, openSide, scale = 1, isAdmin = true }) 
                 fontSize: 12 * scale,
                 fontWeight: 500,
                 color,
+                cursor: 'pointer',
+                transition: 'transform 0.2s',
+                '&:hover': {
+                    transform: 'scale(1.05)',
+                    bgcolor: "#6c90beff",
+                    color: "white"
+                },
+                '&:active': {
+                    transform: 'scale(0.95)',
+                }
             }}
         >
             <div>{id}</div>
-            {(plate && isAdmin) && <div style={{ fontSize: 9 * scale }}>{plate}</div>}
+            {(licensePlate && isAdmin) && <div style={{ fontSize: 9 * scale }}>{licensePlate}</div>}
         </Box>
     );
 };
@@ -220,7 +236,7 @@ const DoubleArrow = ({ x, y, direction = "left", color = "#bbb", length = 60, he
     );
 };
 
-const ParkingMap = ({ mapWidth, mapHeight, scale, slots, isAdmin }) => {
+const ParkingMap = ({ mapWidth, mapHeight, scale, slots, isAdmin, onSlotClick }) => {
     return (
         <Box sx={{ position: "relative", width: mapWidth * scale, height: mapHeight * scale, ml: 4 }}>
             {/* Vẽ slot */}
@@ -230,27 +246,28 @@ const ParkingMap = ({ mapWidth, mapHeight, scale, slots, isAdmin }) => {
                     {...slot}
                     scale={scale}
                     isAdmin={isAdmin}
+                    onSlotClick={onSlotClick}
                 />
             ))}
 
             {/* Lối vào / Lối ra */}
             <Paper
-                sx={{ position: "absolute", right: 0, top: 30, backgroundColor: "#03ca00ff", width: 10, height: 60, borderRadius: '4px 0px 0px 4px' }}
+                sx={{ position: "absolute", right: 0 * scale, top: 30 * scale, backgroundColor: "#03ca00ff", width: 10 * scale, height: 60 * scale, borderRadius: '4px 0px 0px 4px' }}
             />
             <Typography
-                sx={{ position: "absolute", right: 20, top: 50, color: "#03ca00ff", fontWeight: "bold" }}
+                sx={{ position: "absolute", right: 20 * scale, top: 50 * scale, color: "#03ca00ff", fontWeight: "bold" }}
             >
                 Lối vào
             </Typography>
             <Paper
                 elevation={0}
-                sx={{ position: "absolute", right: 0, top: 120, backgroundColor: "#edededff", width: 10, height: 370, borderRadius: '4px 0px 0px 4px' }}
+                sx={{ position: "absolute", right: 0 * scale, top: 120 * scale, backgroundColor: "#edededff", width: 10 * scale, height: 370 * scale, borderRadius: '4px 0px 0px 4px' }}
             />
             <Paper
-                sx={{ position: "absolute", right: 0, bottom: 30, backgroundColor: "red", width: 10, height: 60, borderRadius: '4px 0px 0px 4px' }}
+                sx={{ position: "absolute", right: 0 * scale, bottom: 30 * scale, backgroundColor: "red", width: 10 * scale, height: 60 * scale, borderRadius: '4px 0px 0px 4px' }}
             />
             <Typography
-                sx={{ position: "absolute", right: 20, bottom: 50, color: "red", fontWeight: "bold" }}
+                sx={{ position: "absolute", right: 20 * scale, bottom: 50 * scale, color: "red", fontWeight: "bold" }}
             >
                 Lối ra
             </Typography>
