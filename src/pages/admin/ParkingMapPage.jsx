@@ -4,6 +4,7 @@ import { drawerWidth } from "../../appConst";
 import ParkingMap from "../../components/ParkingMap";
 import { slotPositions } from "../../data/slotPositions";
 import ParkingSlotDialog from "../../components/dialogs/ParkingSlotDialog";
+import CheckInDialog from "../../components/dialogs/CheckInDialog";
 
 // --- Mảng trạng thái 48 slot (giả lập API) ---
 const slotStatesFromAPI = [
@@ -61,6 +62,7 @@ const slotStatesFromAPI = [
 const ParkingMapPage = () => {
     const [slots, setSlots] = useState([]); // state cuối cùng để truyền vào ParkingMap
     const [openSlotInfo, setOpenSlotInfo] = useState(false);
+    const [openCheckIn, setOpenCheckIn] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState(null);
 
     const mapWidth = 840;
@@ -93,6 +95,10 @@ const ParkingMapPage = () => {
         setOpenSlotInfo(true);
     };
 
+    const handleCheckIn = () => {
+        setOpenCheckIn(true);
+    };
+
     return (
         <Box sx={{ ml: 4, mt: 4, width: "100%", height: "100%" }}>
             <Typography variant="h6">Sơ đồ bãi xe</Typography>
@@ -108,10 +114,18 @@ const ParkingMapPage = () => {
                 open={openSlotInfo}
                 slot={selectedSlot}
                 onClose={() => setOpenSlotInfo(false)}
-                onCheckIn={(slot) => console.log("Check in", slot)}
+                onCheckIn={(slot) => handleCheckIn()}
                 onCancel={(slot) => console.log("Cancel booking", slot)}
                 onCheckOut={(slot) => console.log("Check out", slot)}
-            />;
+            />
+            <CheckInDialog
+                open={openCheckIn}
+                onClose={() => setOpenCheckIn(false)}
+                onSubmit={(plate) => {
+                    console.log("Biển số nhập:", plate);
+                    setOpenCheckIn(false);
+                }}
+            />
         </Box>
     );
 };
