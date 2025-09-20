@@ -20,11 +20,12 @@ import {
     Edit,
     Logout,
     DirectionsCar,
+    Map,
 } from "@mui/icons-material";
 import { collapsedWidth, drawerWidth } from "../../appConst";
 
 const menuItems = [
-    { text: "Sơ đồ bãi xe", icon: <GridView />, path: "/admin/parking" },
+    { text: "Sơ đồ bãi xe", icon: <Map />, path: "/admin/parking" },
     { text: "Lượt gửi xe", icon: <ListAlt />, path: "/admin/records" },
     { text: "Thiết kế bãi xe", icon: <Edit />, path: "/admin/editor" },
 ];
