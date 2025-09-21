@@ -18,20 +18,20 @@ import { useEffect } from "react";
 
 export default function UserLayout() {
 	const [anchorEl, setAnchorEl] = React.useState(null);
-  	const [username, setUsername] = React.useState("");
+	const [username, setUsername] = React.useState("");
 
 	const getUserProfileAsync = async () => {
-  try {
-    const res = await getUserProfile();
-    if (res.data && res.data.data) {
-      setUsername(res.data.data.username); // Access the nested data
-    } else {
-      console.error("Unexpected API response structure:", res);
-    }
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
-  }
-};
+		try {
+			const res = await getUserProfile();
+			if (res.data && res.data.data) {
+				setUsername(res.data.data.username); // Access the nested data
+			} else {
+				console.error("Unexpected API response structure:", res);
+			}
+		} catch (error) {
+			console.error("Error fetching user profile:", error);
+		}
+	};
 
 	useEffect(() => {
 		getUserProfileAsync();
@@ -48,7 +48,7 @@ export default function UserLayout() {
 	};
 
 	const navigateBooking = () => {
-		navigate("/booking");
+		navigate("/");
 	}
 
 	const navigateHistory = () => {
