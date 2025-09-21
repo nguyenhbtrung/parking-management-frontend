@@ -12,9 +12,32 @@ import DirectionsCar from "@mui/icons-material/DirectionsCar";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { getUserProfile } from "../../services/user/user.service";
+import { useEffect } from "react";
+
 
 export default function UserLayout() {
 	const [anchorEl, setAnchorEl] = React.useState(null);
+  	const [username, setUsername] = React.useState("");
+
+	const getUserProfileAsync = async () => {
+  try {
+    const res = await getUserProfile();
+    if (res.data && res.data.data) {
+      setUsername(res.data.data.username); // Access the nested data
+    } else {
+      console.error("Unexpected API response structure:", res);
+    }
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+  }
+};
+
+	useEffect(() => {
+		getUserProfileAsync();
+	}, []);
+
+
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -65,7 +88,7 @@ export default function UserLayout() {
 					</Button>
 					<Box onClick={handleMenu} sx={{ p: 1, display: "flex" }}>
 						<Typography variant="body1" sx={{ ml: 1 }}>
-							username
+							{username}
 						</Typography>
 						<KeyboardArrowDownIcon />
 					</Box>

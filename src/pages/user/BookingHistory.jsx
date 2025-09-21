@@ -1,82 +1,55 @@
 import React from "react";
 import {
-  AppBar,
-  Toolbar,
   Typography,
   Button,
   Box,
-  Menu,
-  MenuItem,
   Card,
   CardContent,
   Grid,
 } from "@mui/material";
+import { cancelBooking } from "../../services/user/user.service";
+import { getBookings } from "../../services/user/user.service";
+import { useEffect } from "react";
 
-const bookings = [
-  {
-    id: 1,
-    bienSo: "30A-12345",
-    viTri: "A1",
-    thoiGianDat: "2025-09-19 10:00",
-    trangThai: "Đã đặt",
-  },
-  {
-    id: 2,
-    bienSo: "29B-56789",
-    viTri: "B2",
-    thoiGianDat: "2025-09-18 14:00",
-    trangThai: "Hủy",
-  },
-  {
-    id: 2,
-    bienSo: "29B-56789",
-    viTri: "B2",
-    thoiGianDat: "2025-09-18 14:00",
-    thoiGianVao: "2025-09-18 14:15",
-    thoiGianRa: "2025-09-18 15:30",
-    trangThai: "Hoàn thành",
-  },
-  {
-    id: 2,
-    bienSo: "29B-56789",
-    viTri: "B2",
-    thoiGianDat: "2025-09-18 14:00",
-    thoiGianVao: "2025-09-18 14:15",
-    thoiGianRa: "2025-09-18 15:30",
-    trangThai: "Hoàn thành",
-  },
-  {
-    id: 2,
-    bienSo: "29B-56789",
-    viTri: "B2",
-    thoiGianDat: "2025-09-18 14:00",
-    thoiGianVao: "2025-09-18 14:15",
-    thoiGianRa: "2025-09-18 15:30",
-    trangThai: "Hoàn thành",
-  },
-  {
-    id: 2,
-    bienSo: "29B-56789",
-    viTri: "B2",
-    thoiGianDat: "2025-09-18 14:00",
-    thoiGianVao: "2025-09-18 14:15",
-    thoiGianRa: "2025-09-18 15:30",
-    trangThai: "Hoàn thành",
-  },
-];
 
 export default function BookingHistory() {
-  const [history, setHistory] = React.useState(bookings);
-  const handleCancel = (id) => {
-    setHistory((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, trangThai: "Hủy" } : b))
-    );
+  const [history, setHistory] = React.useState([]);
+
+const getBookingsHistory = async () => {
+  try {
+    const res = await getBookings();
+
+    setHistory(Array.isArray(res.data.data) ? res.data.data : []);
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    setHistory([]); // Fallback to an empty array on error
+  }
+};
+
+  useEffect(() => {
+		getBookingsHistory();
+	}, []);
+
+  const statusMapping = {
+  booked: "Đã đặt",
+  "checked-in": "Đang đỗ",
+  "check-out": "Hoàn thành",
+  cancelled: "Đã hủy",
+};
+
+
+  const handleCancel = async (id) => {
+    const res = await cancelBooking({ id });
+    if (res.status === 200) {
+      alert("Hủy thành công");
+      getBookingsHistory();
+    } else {
+      alert("Hủy thất bại");
+    }
   };
 
   return (
     <Box sx={{ display: "flex", height: "100vh", flexDirection: "column",  alignItems: "center" }}>
-      {/* Header */}
-      {/* Booking History */}
       <Box  sx={{ mt: 4,
                   px: 4,
                   minWidth: "99vw",
@@ -84,11 +57,14 @@ export default function BookingHistory() {
                   flexDirection: "column",
                   alignItems: "center"
             }}>
+              {history.length === 0 && (
+  <Typography sx={{ fontSize: "1.5rem", mt: 4 }}>No bookings found.</Typography>
+)}
         {history.map((booking) => (
-          <Card key={booking.id} sx={{ mb: 2, minWidth:"60vw", backgroundColor:
-        booking.trangThai === "Hủy"
+          <Card key={booking.id} sx={{ mb: 2, minWidth:"80vw", backgroundColor:
+        booking.status === "cancelled"
           ? "#ff7474" 
-          : booking.trangThai === "Đang đỗ" || booking.trangThai === "Đã đặt"
+          : booking.status === "check-in" || booking.status === "booked"
           ? "#deff8c" 
           : "#7aff85" 
           }}>
@@ -97,20 +73,25 @@ export default function BookingHistory() {
                 container
                 spacing={2}
                 sx={{fontSize: "2rem"}}
-                
               >
                 <Grid item xs={12} sm={3} size={5}>
                   <Typography sx={{fontSize: "1.5rem"}}>ID: {booking.id}</Typography>
-                  <Typography sx={{fontSize: "1.5rem"}}>Trạng thái: {booking.trangThai}</Typography>
-                  <Typography sx={{fontSize: "1.5rem"}}>Thời gian vào: {booking.thoiGianVao}</Typography>
+                  <Typography sx={{fontSize: "1.5rem"}}>Trạng thái: {statusMapping[booking.status] || "Không xác định"}</Typography>
+                  <Typography sx={{fontSize: "1.5rem"}}>Thời gian vào: {booking.checkInTime
+              ? new Date(booking.checkInTime).toLocaleString()
+              : "N/A"}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={3} size={5}>
-                  <Typography sx={{fontSize: "1.5rem"}}>Vị trí: {booking.viTri}</Typography>
-                  <Typography sx={{fontSize: "1.5rem"}}>Thời gian đặt: {booking.thoiGianDat}</Typography>
-                  <Typography sx={{fontSize: "1.5rem"}}>Thời gian ra: {booking.thoiGianRa}</Typography>
+                  <Typography sx={{fontSize: "1.5rem"}}>Vị trí: {booking.parkingSlotId}</Typography>
+                  <Typography sx={{fontSize: "1.5rem"}}>Thời gian đặt: {booking.bookingTime
+              ? new Date(booking.bookingTime).toLocaleString()
+              : "N/A"}</Typography>
+                  <Typography sx={{fontSize: "1.5rem"}}>Thời gian ra: {booking.checkOutTime
+              ? new Date(booking.checkOutTime).toLocaleString()
+              : "N/A"}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={3} size="grow" sx={{display:"flex", alignItems: "center"}}>
-                  {booking.trangThai == "Đã đặt" && (
+                  {booking.status == "booked" && (
                     <Button
                       variant="outlined"
                       color="error"
