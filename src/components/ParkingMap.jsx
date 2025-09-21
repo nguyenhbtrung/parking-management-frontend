@@ -38,7 +38,7 @@ const Slot = ({ id, status, x, y, licensePlate, openSide, scale = 1, isAdmin = t
     let borderColor = "#aaa";
 
     if (!isAdmin) {
-        if (status !== "available") {
+        if (status && status !== "available") {
             bg = "#FFB3B3";
             // borderColor = "#D00000";
             color = "darkred";

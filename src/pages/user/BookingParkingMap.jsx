@@ -8,85 +8,85 @@ import { slotPositions } from "../../data/slotPositions";
 import { booking } from "../../services/user/user.service";
 
 export default function BookingParkingMap() {
-	const [slots, setSlots] = useState([]); // state cuối cùng để truyền vào ParkingMap
+  const [slots, setSlots] = useState(slotPositions); // state cuối cùng để truyền vào ParkingMap
   const [selectedSlot, setSelectedSlot] = useState(null);
-	const [bookingTime, setBookingTime] = useState("");
+  const [bookingTime, setBookingTime] = useState("");
 
 
-    const mapWidth = 840;
-    const mapHeight = 610;
-    const availableWidth = window.innerWidth - drawerWidth;
-    const scale = (availableWidth / mapWidth) * 0.8;
+  const mapWidth = 840;
+  const mapHeight = 610;
+  const availableWidth = window.innerWidth - drawerWidth;
+  const scale = (availableWidth / mapWidth) * 0.8;
 
-    const getParkingSlotsAsync = async () => {
-        const response = await getParkingSlotsInfo();
-        if (response.status === 200) {
-            const data = response.data.data;
-            const stateMap = {};
-        data.forEach((slot) => {
-            stateMap[slot.id] = {
-                ...slot,
-                licensePlate: slot.licensePlate || null, // Default to null if missing
-                updatedAt: slot.updatedAt || null,       // Default to null if missing
-            };
-        });
-
-        // Merge slotPositions with the stateMap
-        const mergedSlots = slotPositions.map((pos) => ({
-            ...pos,
-            ...(stateMap[pos.id] || {}), // Merge state data if available
-        }));
-
-        setSlots(mergedSlots);
-        } else {
-            alert("Lấy thông tin chỗ đỗ thất bại");
-        }
-    }
-
-	  useEffect(() => {
-       getParkingSlotsAsync()
-    }, []);
-
-    const onSlotClick = (id) => {
-        const slot = slots.find(s => s.id === id);
-        setSelectedSlot(slot);
-    };
-
-	  const handleSubmit = async () => {
-      if (!selectedSlot) {
-        alert("Hãy chọn một chỗ trong sơ đồ trước!");
-        return;
-      }
-      if (!bookingTime) {
-        alert("Hãy chọn thời gian muốn đặt!");
-        return;
-      }
-      try {
-    // Prepare the data in the format the API expects
-        const requestData = {
-          bookingTime, // From the form
-          parkingSlotId: selectedSlot.id, // From the selected slot
+  const getParkingSlotsAsync = async () => {
+    const response = await getParkingSlotsInfo();
+    if (response.status === 200) {
+      const data = response.data.data;
+      const stateMap = {};
+      data.forEach((slot) => {
+        stateMap[slot.id] = {
+          ...slot,
+          licensePlate: slot.licensePlate || null, // Default to null if missing
+          updatedAt: slot.updatedAt || null,       // Default to null if missing
         };
+      });
 
-        // Call the booking API
-        const response = await booking(requestData);
+      // Merge slotPositions with the stateMap
+      const mergedSlots = slotPositions.map((pos) => ({
+        ...pos,
+        ...(stateMap[pos.id] || {}), // Merge state data if available
+      }));
 
-        if (response.status === 201) {
-          alert("Đặt chỗ thành công!");
-          getParkingSlotsAsync(); // Refresh the slots to show updated status
-          console.log("Booking response:", response.data);
-        } else {
-          alert("Đặt chỗ thất bại!");
-        }
-      } catch (error) {
-        console.error("Error during booking:", error);
-        alert("Có lỗi xảy ra khi đặt chỗ!");
+      setSlots(mergedSlots);
+    } else {
+      alert("Lấy thông tin chỗ đỗ thất bại");
+    }
+  }
+
+  useEffect(() => {
+    getParkingSlotsAsync()
+  }, []);
+
+  const onSlotClick = (id) => {
+    const slot = slots.find(s => s.id === id);
+    setSelectedSlot(slot);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedSlot) {
+      alert("Hãy chọn một chỗ trong sơ đồ trước!");
+      return;
+    }
+    if (!bookingTime) {
+      alert("Hãy chọn thời gian muốn đặt!");
+      return;
+    }
+    try {
+      // Prepare the data in the format the API expects
+      const requestData = {
+        bookingTime, // From the form
+        parkingSlotId: selectedSlot.id, // From the selected slot
+      };
+
+      // Call the booking API
+      const response = await booking(requestData);
+
+      if (response.status === 201) {
+        alert("Đặt chỗ thành công!");
+        getParkingSlotsAsync(); // Refresh the slots to show updated status
+        console.log("Booking response:", response.data);
+      } else {
+        alert("Đặt chỗ thất bại!");
       }
-    };
+    } catch (error) {
+      console.error("Error during booking:", error);
+      alert("Có lỗi xảy ra khi đặt chỗ!");
+    }
+  };
 
-	return (
-	<Box sx={{ ml: 4, mt: 4, display: "flex", gap: 4 }}>
-		<Paper sx={{ flex: 1, p: 3, display: "flex", flexDirection: "column", gap: 2 }}>
+  return (
+    <Box sx={{ ml: 4, mt: 4, display: "flex", gap: 4 }}>
+      <Paper sx={{ flex: 1, p: 3, display: "flex", flexDirection: "column", gap: 2 }}>
         <Typography variant="h6">Đặt chỗ</Typography>
 
         <TextField
@@ -128,5 +128,5 @@ export default function BookingParkingMap() {
 
       {/* Bên phải: form */}
     </Box>
-	);
+  );
 }
