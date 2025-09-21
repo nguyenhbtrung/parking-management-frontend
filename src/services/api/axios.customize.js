@@ -27,6 +27,7 @@ api.interceptors.response.use(
         //     localStorage.removeItem(ACCESS_TOKEN_KEY_NAME);
         //     window.location.href = '/signin';
         // }
+        if (error?.response) return error?.response;
         return Promise.reject(error);
     }
 );

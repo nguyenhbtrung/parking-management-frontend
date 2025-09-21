@@ -5,6 +5,9 @@ import MapEditorPage from "../pages/admin/MapEditorPage";
 import BookingHistory from "../pages/user/BookingHistory";
 import UserLayout from "../pages/user/UserLayout";
 import BookingParkingMap from "../pages/user/BookingParkingMap";
+import Login from "../pages/auth/LogIn";
+import Register from "../pages/auth/Register";
+
 
 function AppRoutes() {
     return (
@@ -21,6 +24,8 @@ function AppRoutes() {
                 <Route path="booking" element={<BookingParkingMap />} />
             </Route>
 
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
             <Route path="*" element={<div>404</div>} />
         </Routes>

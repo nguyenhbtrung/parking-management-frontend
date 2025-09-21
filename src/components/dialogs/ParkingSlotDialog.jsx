@@ -98,16 +98,16 @@ export default function ParkingSlotDialog({
                 )}
                 {status === "booked" && (
                     <>
-                        <Button onClick={() => onCheckIn(slot)} variant="contained" color="success">
+                        <Button onClick={onCheckIn} variant="contained" color="success">
                             Check in
                         </Button>
-                        <Button onClick={() => onCancel(slot)} variant="outlined" color="warning">
+                        <Button onClick={onCancel} variant="outlined" color="warning">
                             Huỷ
                         </Button>
                     </>
                 )}
                 {status === "occupied" && (
-                    <Button onClick={() => onCheckOut(slot)} variant="contained" color="error">
+                    <Button onClick={onCheckOut} variant="contained" color="error">
                         Check out
                     </Button>
                 )}
