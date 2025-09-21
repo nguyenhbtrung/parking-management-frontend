@@ -73,6 +73,7 @@ export default function BookingParkingMap() {
 
         if (response.status === 201) {
           alert("Đặt chỗ thành công!");
+          getParkingSlotsAsync(); // Refresh the slots to show updated status
           console.log("Booking response:", response.data);
         } else {
           alert("Đặt chỗ thất bại!");
