@@ -5,7 +5,8 @@ import ParkingMap from "../../components/ParkingMap";
 import { slotPositions } from "../../data/slotPositions";
 import ParkingSlotDialog from "../../components/dialogs/ParkingSlotDialog";
 import CheckInDialog from "../../components/dialogs/CheckInDialog";
-import { getParkingSlots } from "../../services/admin/parkingSlot.service";
+import { cancelBooking, checkIn, checkOut, getParkingSlots } from "../../services/admin/parkingSlot.service";
+import { toast } from "react-toastify";
 
 // --- Mảng trạng thái 48 slot (giả lập API) ---
 const slotStatesFromAPI = [
@@ -61,7 +62,7 @@ const slotStatesFromAPI = [
 
 
 const ParkingMapPage = () => {
-    const [slots, setSlots] = useState([]); // state cuối cùng để truyền vào ParkingMap
+    const [slots, setSlots] = useState(slotPositions);
     const [openSlotInfo, setOpenSlotInfo] = useState(false);
     const [openCheckIn, setOpenCheckIn] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState(null);
@@ -118,6 +119,61 @@ const ParkingMapPage = () => {
         setOpenCheckIn(true);
     };
 
+    const handleCheckInSubmit = async (licensePlate) => {
+        const res = await checkIn(selectedSlot.id, { licensePlate });
+        if (res.status === 200) {
+            const updatedSlot = res?.data?.data;
+
+            setSlots(prevSlots =>
+                prevSlots.map(slot =>
+                    slot.id === updatedSlot.id ? { ...slot, ...updatedSlot } : slot
+                )
+            );
+
+            toast.success("Check in thành công.");
+            setOpenSlotInfo(false);
+        } else {
+            toast.error("Có lỗi xảy ra khi check in.");
+        }
+        setOpenCheckIn(false);
+    };
+
+    const handleCheckOut = async () => {
+        const res = await checkOut(selectedSlot.id);
+        if (res.status === 200) {
+            const updatedSlot = res?.data?.data;
+
+            setSlots(prevSlots =>
+                prevSlots.map(slot =>
+                    slot.id === updatedSlot.id ? { ...slot, ...updatedSlot } : slot
+                )
+            );
+
+            toast.success("Check out thành công.");
+            setOpenSlotInfo(false);
+        } else {
+            toast.error("Có lỗi xảy ra khi check out.");
+        }
+    };
+
+    const handleCancel = async () => {
+        const res = await cancelBooking(selectedSlot.id);
+        if (res.status === 200) {
+            const updatedSlot = res?.data?.data;
+
+            setSlots(prevSlots =>
+                prevSlots.map(slot =>
+                    slot.id === updatedSlot.id ? { ...slot, ...updatedSlot } : slot
+                )
+            );
+
+            toast.success("Huỷ đặt chỗ thành công.");
+            setOpenSlotInfo(false);
+        } else {
+            toast.error("Có lỗi xảy ra khi huỷ đặt chỗ.");
+        }
+    };
+
     return (
         <Box sx={{ ml: 4, mt: 4, width: "100%", height: "100%" }}>
             <Typography variant="h6">Sơ đồ bãi xe</Typography>
@@ -133,17 +189,14 @@ const ParkingMapPage = () => {
                 open={openSlotInfo}
                 slot={selectedSlot}
                 onClose={() => setOpenSlotInfo(false)}
-                onCheckIn={(slot) => handleCheckIn()}
-                onCancel={(slot) => console.log("Cancel booking", slot)}
-                onCheckOut={(slot) => console.log("Check out", slot)}
+                onCheckIn={handleCheckIn}
+                onCancel={handleCancel}
+                onCheckOut={handleCheckOut}
             />
             <CheckInDialog
                 open={openCheckIn}
                 onClose={() => setOpenCheckIn(false)}
-                onSubmit={(plate) => {
-                    console.log("Biển số nhập:", plate);
-                    setOpenCheckIn(false);
-                }}
+                onSubmit={handleCheckInSubmit}
             />
         </Box>
     );
