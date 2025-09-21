@@ -17,7 +17,7 @@ function AppRoutes() {
 
             {/* Admin */}
             <Route path="/admin" element={<AdminLayout />}>
-                <Route path="parking" element={<ParkingManagementPage />} />
+                <Route index element={<ParkingManagementPage />} />
                 <Route path="records" element={<ParkingRecordsPage />} />
             </Route>
             <Route path="/" element={<UserLayout />} >
