@@ -12,9 +12,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-// import mock API (replace with real axios calls in production)
-import { postAction } from "./mockApi";
-import { getParkingRecords } from "../../services/admin/parkingRecord.service";
+import { getParkingRecords, postAction } from "../../services/admin/parkingRecord.service";
+import CheckInDialog from "../../components/dialogs/CheckInDialog";
 
 const statusColor = (s) => {
     switch (s) {
@@ -47,6 +46,8 @@ export default function ParkingRecordsPage() {
 
     // confirmation dialog
     const [confirm, setConfirm] = useState({ open: false, id: null, action: null });
+
+    const [openCheckIn, setOpenCheckIn] = useState(false);
 
     const searchRef = useRef(null); // debounce
 
@@ -118,10 +119,19 @@ export default function ParkingRecordsPage() {
     const openConfirm = (id, action) => setConfirm({ open: true, id, action });
     const closeConfirm = () => setConfirm({ open: false, id: null, action: null });
 
-    const doAction = async () => {
+    const handleAction = () => {
         const { id, action } = confirm;
         if (!id || !action) return;
-        closeConfirm();
+        if (action === "check-in") {
+            setOpenCheckIn(true);
+        } else {
+            doAction(id, action);
+            closeConfirm();
+        }
+    };
+
+    const doAction = async (id, action) => {
+
         try {
             // optimistic: update UI after success
             await postAction(id, action); // in real: call axios POST to backend
@@ -132,6 +142,30 @@ export default function ParkingRecordsPage() {
             setSnackbar({ open: true, severity: 'error', message: err.message || "Thao tác thất bại" });
         }
     };
+
+    const handleCheckInSubmit = async (licensePlate) => {
+        const { id } = confirm;
+
+        setOpenCheckIn(false);
+        try {
+            await postAction(id, "check-in", { licensePlate });
+            setSnackbar({
+                open: true,
+                severity: 'success',
+                message: "Check-in thành công"
+            });
+            fetchData();
+        } catch (err) {
+            setSnackbar({
+                open: true,
+                severity: 'error',
+                message: err.response?.data?.message || err.message || "Check-in thất bại"
+            });
+        } finally {
+            closeConfirm();
+        }
+    };
+
 
     const closeSnackbar = () => setSnackbar(s => ({ ...s, open: false }));
 
@@ -241,7 +275,7 @@ export default function ParkingRecordsPage() {
                                                         size="small"
                                                         variant="contained"
                                                         startIcon={<CheckIcon />}
-                                                        onClick={() => openConfirm(row.id, "check-in")}
+                                                        onClick={() => openConfirm(row.parkingSlotId, "check-in")}
                                                     >
                                                         Check in
                                                     </Button>
@@ -250,7 +284,7 @@ export default function ParkingRecordsPage() {
                                                         variant="outlined"
                                                         color="error"
                                                         startIcon={<CloseIcon />}
-                                                        onClick={() => openConfirm(row.id, "cancel")}
+                                                        onClick={() => openConfirm(row.parkingSlotId, "cancel")}
                                                     >
                                                         Huỷ
                                                     </Button>
@@ -263,7 +297,7 @@ export default function ParkingRecordsPage() {
                                                     variant="contained"
                                                     color="secondary"
                                                     startIcon={<ExitToAppIcon />}
-                                                    onClick={() => openConfirm(row.id, "check-out")}
+                                                    onClick={() => openConfirm(row.parkingSlotId, "check-out")}
                                                 >
                                                     Check out
                                                 </Button>
@@ -304,12 +338,12 @@ export default function ParkingRecordsPage() {
                 <DialogTitle>Xác nhận</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        Bạn có chắc muốn thực hiện hành động <strong>{confirm.action}</strong> cho bản ghi <strong>{confirm.id}</strong> ?
+                        Bạn có chắc muốn thực hiện hành động <strong>{confirm.action}</strong> cho vị trí <strong>{confirm.id}</strong> ?
                     </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={closeConfirm}>Huỷ</Button>
-                    <Button onClick={doAction} variant="contained">Xác nhận</Button>
+                    <Button onClick={handleAction} variant="contained">Xác nhận</Button>
                 </DialogActions>
             </Dialog>
 
@@ -319,6 +353,12 @@ export default function ParkingRecordsPage() {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
+            <CheckInDialog
+                open={openCheckIn}
+                onClose={() => setOpenCheckIn(false)}
+                onSubmit={handleCheckInSubmit}
+            />
+
         </Box>
     );
 }
