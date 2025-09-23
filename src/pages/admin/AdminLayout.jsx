@@ -24,6 +24,7 @@ import {
     Person,
 } from "@mui/icons-material";
 import { collapsedWidth, drawerWidth } from "../../appConst";
+import { removeAccessToken } from "../../services/auth.service";
 
 const menuItems = [
     { text: "Sơ đồ bãi xe", icon: <Map />, path: "/admin" },
@@ -35,6 +36,11 @@ export default function AdminLayout() {
     const [open, setOpen] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
+
+    const handleLogout = () => {
+        removeAccessToken();
+        navigate("/login");
+    };
 
     return (
         <Box sx={{ display: "flex", height: "100vh", maxWidth: "100%" }}>
@@ -129,7 +135,7 @@ export default function AdminLayout() {
                 <Box sx={{ mt: "auto", px: 1, pb: 2 }}>
                     <Tooltip title={!open ? "Đăng xuất" : ""} placement="right" arrow>
                         <ListItemButton
-                            onClick={() => alert("Logout clicked")}
+                            onClick={handleLogout}
                             sx={{
                                 borderRadius: 1.5,
                                 "&:hover": { bgcolor: "#333333" },

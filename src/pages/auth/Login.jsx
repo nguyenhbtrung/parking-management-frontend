@@ -33,7 +33,11 @@ const LoginPage = () => {
         alert("Đăng nhập thành công!");
         console.log("Login response:", response.data);
         saveAccessToken(response.data.data.token);
-        navigate("/"); // Redirect to the booking page after login
+        if (response.data.data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/"); // Redirect to the booking page after login
+        }
       } else {
         alert("Đăng nhập thất bại!");
       }
