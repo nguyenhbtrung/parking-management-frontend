@@ -35,11 +35,22 @@ const RegisterPage = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{
+        minHeight: "100vh", // Full viewport height
+        minWidth: "100vw", // Full viewport width
+        display: "flex", // Enables flexbox
+        alignItems: "center", // Centers vertically
+        justifyContent: "center", // Centers horizontally
+        margin: 0, // Removes any margin
+        padding: 0, // Removes any padding
+      }}
+    >
       <Paper
         elevation={6}
         sx={{
-          mt: 8,
           p: 4,
           display: "flex",
           flexDirection: "column",
