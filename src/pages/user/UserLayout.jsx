@@ -14,6 +14,7 @@ import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile } from "../../services/user/user.service";
 import { useEffect } from "react";
+import { removeAccessToken } from "../../services/auth.service";
 
 
 export default function UserLayout() {
@@ -44,6 +45,8 @@ export default function UserLayout() {
 	const navigate = useNavigate();
 
 	const handleClose = () => {
+		removeAccessToken();
+		navigate("/login");
 		setAnchorEl(null);
 	};
 

@@ -13,6 +13,7 @@ export default function BookingParkingMap() {
   const [bookingTime, setBookingTime] = useState("");
 
 
+
   const mapWidth = 840;
   const mapHeight = 610;
   const availableWidth = window.innerWidth - drawerWidth;
@@ -111,7 +112,6 @@ export default function BookingParkingMap() {
           Xác nhận đặt chỗ
         </Button>
       </Paper>
-      {/* Bên trái: sơ đồ */}
       <Box sx={{ flex: 2 }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Sơ đồ bãi xe
@@ -126,7 +126,6 @@ export default function BookingParkingMap() {
         />
       </Box>
 
-      {/* Bên phải: form */}
     </Box>
   );
 }
