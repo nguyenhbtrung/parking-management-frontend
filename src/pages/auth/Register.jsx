@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import bgImage from "../../../bg.webp"; // Import the background image
+import { register } from "../../services/auth.service";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [form, setForm] = useState({
@@ -19,21 +21,33 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    phone: "", // Added phone field
+    phone: "", 
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (form.password !== form.confirmPassword) {
       alert("Mật khẩu xác nhận không khớp!");
       return;
     }
-    console.log("Register info:", form);
-    // TODO: gọi API tạo tài khoản
+    try {
+      const response = await register(form);
+      if (response.status === 201) {
+        alert("Đăng ký thành công!");
+        console.log("Register response:", response.data);
+        navigate("/login"); // Redirect to the login page after successful registration
+      } else {
+        alert("Đăng ký thất bại!");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("Có lỗi xảy ra khi đăng ký!");
+    }
   };
 
   return (

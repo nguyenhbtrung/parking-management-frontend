@@ -15,6 +15,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import bgImage from "../../../bg.webp"; // Import the background image
+import { login, saveAccessToken } from "../../services/auth.service";
 
 const LoginPage = () => {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -24,10 +25,22 @@ const LoginPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Login info:", form);
-    // TODO: gọi API xác thực đăng nhập
+    try {
+      const response = await login(form);
+      if (response.status === 200) {
+        alert("Đăng nhập thành công!");
+        console.log("Login response:", response.data);
+        saveAccessToken(response.data.data.token);
+        navigate("/"); // Redirect to the booking page after login
+      } else {
+        alert("Đăng nhập thất bại!");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Có lỗi xảy ra khi đăng nhập!");
+    }
   };
 
   return (
@@ -105,12 +118,7 @@ const LoginPage = () => {
           >
             Đăng nhập
           </Button>
-          <Grid container justifyContent="space-between">
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Quên mật khẩu?
-              </Link>
-            </Grid>
+          <Grid container justifyContent="flex-end">
             <Grid item>
               <Link
                 variant="body2"
