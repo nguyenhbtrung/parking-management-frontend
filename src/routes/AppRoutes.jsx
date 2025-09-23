@@ -8,6 +8,7 @@ import BookingParkingMap from "../pages/user/BookingParkingMap";
 import Login from "../pages/auth/LogIn";
 import Register from "../pages/auth/Register";
 import ParkingRecordsPage from "../pages/admin/ParkingRecordsPage";
+import ManageUsersPage from "../pages/admin/ManageUsersPage";
 
 
 function AppRoutes() {
@@ -19,6 +20,7 @@ function AppRoutes() {
             <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<ParkingManagementPage />} />
                 <Route path="records" element={<ParkingRecordsPage />} />
+                <Route path="users" element={<ManageUsersPage />} />
             </Route>
             <Route path="/" element={<UserLayout />} >
                 <Route index element={<BookingParkingMap />} />

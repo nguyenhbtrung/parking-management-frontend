@@ -21,12 +21,14 @@ import {
     Logout,
     DirectionsCar,
     Map,
+    Person,
 } from "@mui/icons-material";
 import { collapsedWidth, drawerWidth } from "../../appConst";
 
 const menuItems = [
     { text: "Sơ đồ bãi xe", icon: <Map />, path: "/admin" },
     { text: "Lượt gửi xe", icon: <ListAlt />, path: "/admin/records" },
+    { text: "Người dùng", icon: <Person />, path: "/admin/users" },
 ];
 
 export default function AdminLayout() {
