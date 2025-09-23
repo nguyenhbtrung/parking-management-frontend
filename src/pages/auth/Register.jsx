@@ -11,6 +11,7 @@ import {
   Paper,
 } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import bgImage from "../../../bg.webp"; // Import the background image
 
 const RegisterPage = () => {
   const [form, setForm] = useState({
@@ -18,6 +19,7 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    phone: "", // Added phone field
   });
 
   const handleChange = (e) => {
@@ -37,25 +39,32 @@ const RegisterPage = () => {
   return (
     <Container
       component="main"
-      maxWidth="xs"
+      maxWidth="sm"
       sx={{
-        minHeight: "100vh", // Full viewport height
-        minWidth: "100vw", // Full viewport width
-        display: "flex", // Enables flexbox
-        alignItems: "center", // Centers vertically
-        justifyContent: "center", // Centers horizontally
-        margin: 0, // Removes any margin
-        padding: 0, // Removes any padding
+        minHeight: "100vh",
+        minWidth: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 0,
+        padding: 0,
+        backgroundImage: `url(${bgImage})`, // Set the background image
+        backgroundSize: "cover", // Ensure the image covers the entire container
+        backgroundPosition: "center", // Center the image
+        backgroundRepeat: "no-repeat", // Prevent the image from repeating
       }}
     >
       <Paper
         elevation={6}
         sx={{
           p: 4,
+          width: "100%",
+          maxWidth: 400,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           borderRadius: 3,
+          backgroundColor: "rgba(255, 255, 255, 0.9)", // Add a semi-transparent background
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -88,6 +97,17 @@ const RegisterPage = () => {
             name="email"
             type="email"
             value={form.email}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="phone"
+            label="Số điện thoại" // Added phone label
+            name="phone"
+            type="tel"
+            value={form.phone}
             onChange={handleChange}
           />
           <TextField
