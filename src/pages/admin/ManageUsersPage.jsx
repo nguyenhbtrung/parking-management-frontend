@@ -53,7 +53,6 @@ export default function ManageUsersPage() {
                 sortBy,
                 sortOrder,
             });
-
             if (isSuccess(res)) {
                 setRows(res.data.data);
                 setTotal(res.data.pagination.total);
@@ -96,6 +95,28 @@ export default function ManageUsersPage() {
 
     const closeSnackbar = () => setSnackbar(s => ({ ...s, open: false }));
 
+    const mapError = (message, fields = {}) => {
+        switch (message) {
+            case "Validation error: Validation isEmail on email failed":
+                return "Email không đúng định dạng";
+
+            case "username already exists":
+                return "Tên đăng nhập này đã tồn tại";
+
+            case "email already exists":
+                return "Email này đã tồn tại";
+
+            case "Validation error":
+                if (fields.username)
+                    return "Tên đăng nhập này đã tồn tại";
+                if (fields.email)
+                    return "Email này đã tồn tại";
+                return "Lỗi xác thực";
+            default:
+                return "Có lỗi xảy ra";
+        }
+    };
+
     // CRUD
     const handleSaveUser = async (user) => {
         try {
@@ -105,14 +126,15 @@ export default function ManageUsersPage() {
                 if (isSuccess(res)) {
                     setSnackbar({ open: true, severity: "success", message: "Thêm người dùng thành công" });
                 } else {
-                    throw new Error(`Lỗi ${res.status}`);
+                    throw new Error(mapError(res.data.error.message));
                 }
             } else {
                 res = await updateUser(dialog.user.id, user);
+                console.log("res", res);
                 if (isSuccess(res)) {
                     setSnackbar({ open: true, severity: "success", message: "Cập nhật người dùng thành công" });
                 } else {
-                    throw new Error(`Lỗi ${res.status}`);
+                    throw new Error(mapError(res.data.error.message, res.data.error.fields));
                 }
             }
             setDialog({ open: false, mode: "create", user: null });
@@ -182,12 +204,12 @@ export default function ManageUsersPage() {
                                 <TableCell sortDirection={sortBy === "id" ? sortOrder.toLowerCase() : false}>
                                     <TableSortLabel active={sortBy === "id"} direction={sortOrder.toLowerCase()} onClick={() => handleSort("id")}>ID</TableSortLabel>
                                 </TableCell>
-                                <TableCell>Username</TableCell>
+                                <TableCell>Tên đăng nhập</TableCell>
                                 <TableCell>Họ tên</TableCell>
                                 <TableCell>Email</TableCell>
-                                <TableCell>Phone</TableCell>
+                                <TableCell>Số điện thoại</TableCell>
                                 <TableCell sortDirection={sortBy === "role" ? sortOrder.toLowerCase() : false}>
-                                    <TableSortLabel active={sortBy === "role"} direction={sortOrder.toLowerCase()} onClick={() => handleSort("role")}>Role</TableSortLabel>
+                                    <TableSortLabel active={sortBy === "role"} direction={sortOrder.toLowerCase()} onClick={() => handleSort("role")}>Vai trò</TableSortLabel>
                                 </TableCell>
                                 <TableCell align="right">Hành động</TableCell>
                             </TableRow>
